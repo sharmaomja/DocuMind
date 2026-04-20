@@ -15,6 +15,7 @@ import {
   Waves,
   X,
 } from "lucide-react";
+import type { Variants } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import type { Components } from "react-markdown";
@@ -121,12 +122,15 @@ const suggestedPrompts = [
   "Find the core of this document",
 ];
 
-const reveal = {
+const reveal: Variants = {
   hidden: { opacity: 0, y: 24 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
+    transition: {
+      duration: 0.55,
+      ease: [0.22, 1, 0.36, 1] as any, 
+    },
   },
 };
 
