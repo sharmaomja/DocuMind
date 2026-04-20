@@ -1,0 +1,69 @@
+"use client";
+
+import axios from "axios";
+import { useRef, useState } from "react";
+
+export default function Home() {
+  const [fileData, setFileData] = useState<[]>([]);
+  const fileUpload = useRef<HTMLInputElement>(null);
+  const [fileUploadStatus, setFileUploadStatus] = useState<any | null>(null);
+
+  const handleUploadChange = (e: any) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    const fileData = [];
+    for (let i = 0; i < files.length; i++) {
+      fileData.push({
+        name: files[i].name,
+        size: files[i].size,
+      });
+    }
+    setFileData(fileData);
+  };
+
+  const handleFileUpload = async () => {
+    const formData = new FormData();
+    fileData.map((item: any, index: any) => {
+      formData.append(
+        "file",
+        fileUpload.current.files[index],
+        fileUpload.current.files[index].name,
+      );
+    });
+    const resultData = await axios.post("/api/fileUpload", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    console.log("resultData", resultData);
+    if (resultData.data.data) {
+      setFileUploadStatus(resultData.data.data);
+    }
+  };
+
+  return (
+    <div className="max-w-screen-xl mx-auto my-5">
+      <div className="w-full text-3xl">
+        <h1>Upload file</h1>
+      </div>
+      <div className="w-full bg-gray-100 rounded-xl my-7 p-10">
+        <h4>File Upload</h4>
+        <div className="mt-7">
+          <input
+            type="file"
+            multiple
+            ref={fileUpload}
+            onChange={handleUploadChange}
+            className="bg-gray-100 text-black mr-5"
+          />
+          <button
+            onClick={handleFileUpload}
+            className="bg-gray-200 text-black rounded-md py-1 px-4 hover:bg-gray-400"
+          >
+            Upload
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}

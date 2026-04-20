@@ -1,0 +1,11 @@
+Upload file
+ → Extract text
+ → Chunk text
+ → Generate embeddings
+ → Store in Neon (pgvector)
+
+User asks question
+ → Convert question to embedding
+ → Search similar chunks
+ → Send chunks + question to LLM
+ → Return answer
