@@ -1,5 +1,6 @@
 "use client";
 
+import "regenerator-runtime/runtime"; 
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { AnimatePresence, motion } from "framer-motion";
@@ -480,20 +481,24 @@ export default function Chat() {
                                 : "rich-markdown"
                             }`}
                           >
-                            {displayParts.map((part, index) => (
-                              <div key={`${message.id}-${index}`} className="break-words">
-                                {message.role === "user" ? (
-                                  <p>{part.text}</p>
-                                ) : (
-                                  <ReactMarkdown
-                                    remarkPlugins={[remarkGfm]}
-                                    components={markdownComponents}
-                                  >
-                                    {part.text}
-                                  </ReactMarkdown>
-                                )}
-                              </div>
-                            ))}
+                        {displayParts.map((part, index) => {
+  if (part.type !== "text") return null;
+
+  return (
+    <div key={`${message.id}-${index}`} className="break-words">
+      {message.role === "user" ? (
+        <p>{part.text}</p>
+      ) : (
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          components={markdownComponents}
+        >
+          {part.text}
+        </ReactMarkdown>
+      )}
+    </div>
+  );
+})}
                           </div>
                         </motion.article>
                       );
