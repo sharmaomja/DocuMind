@@ -163,7 +163,12 @@ export default function Chat() {
     .map((message) => ({
       id: message.id,
       role: message.role,
-      parts: getDisplayableParts(message).map((part) => part.text),
+      parts: getDisplayableParts(message)
+        .filter(
+          (part): part is { type: "text"; text: string } =>
+            part.type === "text",
+        )
+        .map((part) => part.text),
     }))
     .filter((message) => message.parts.length > 0);
 
@@ -205,7 +210,9 @@ export default function Chat() {
               messagesEndRef={messagesEndRef}
             />
             <ChatComposer
-              browserSupportsSpeechRecognition={browserSupportsSpeechRecognition}
+              browserSupportsSpeechRecognition={
+                browserSupportsSpeechRecognition
+              }
               canSubmit={canSubmit}
               draftInput={draftInput}
               fileCount={fileCount}

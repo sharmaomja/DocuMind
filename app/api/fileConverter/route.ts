@@ -14,18 +14,16 @@
 //   return NextResponse.json({data: result.text});
 // }
 
-
 import { NextRequest, NextResponse } from "next/server";
-import pdf from "pdf-parse";
 
-export const runtime = "nodejs"; // VERY important for Vercel
+export const runtime = "nodejs";
 
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
     const files = formData.getAll("file") as File[];
 
-    if (!files || files.length === 0) {
+    if (!files.length) {
       return NextResponse.json(
         { error: "No file uploaded" },
         { status: 400 }
@@ -33,15 +31,18 @@ export async function POST(req: NextRequest) {
     }
 
     const file = files[0];
-
-    // Convert file to buffer
     const buffer = Buffer.from(await file.arrayBuffer());
 
-    // Parse PDF
-    const data = await pdf(buffer);
+    const PdfParse = require("pdf-parse-new");
+
+    const parser = new PdfParse.SmartPDFParser({
+      oversaturationFactor: 1.5,
+    });
+
+    const result = await parser.parse(buffer);
 
     return NextResponse.json({
-      data: data.text,
+      data: result.text,
     });
   } catch (error) {
     console.error("PDF parsing error:", error);
